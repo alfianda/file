@@ -1,3 +1,13 @@
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(registration => {
+            console.log('Service Worker registered!');
+        })
+        .catch(error => {
+            console.error('Service Worker registration failed:', error);
+        });
+}
+
 const container = document.querySelector('.container');
 const searchBar = document.getElementById('search-bar');
 
@@ -39,6 +49,16 @@ function downloadFile(file) {
     link.download = file.split('/').pop();
     link.target = '_blank';
     link.click();
+
+    // Munculkan notifikasi progres download
+    if ('serviceWorker' in navigator && 'Notification' in window) {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification('Download in progress', {
+                body: 'File is being downloaded',
+                icon: 'download-icon.png' // Ganti dengan ikon yang sesuai
+            });
+        });
+    }
 }
 
 function showNotFoundMessage() {
